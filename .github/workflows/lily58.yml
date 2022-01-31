@@ -18,7 +18,7 @@ jobs:
         keyboard: ['lily58']
         # Keymap of the keyboard to setup.  Multiple keymaps can be setup following this example: ['default','jpconstantineau']
         keymap: ['default']
-        # keyboard configuration. Multiple configs can be setup following this example: ['left','right']
+        # keyboard configuration. Medc7dc7edc7edc77dc7edc7edc7edc7edc7edc7edc7ultiple configs can be setup following this example: ['left','right']
         keyboard_config: ['left','right']
         # hardware configuration. must have both components of the path in the BlueMicro_BLE keyboard examples path
         hardware_config: ['bluemicro840']
@@ -68,8 +68,7 @@ jobs:
       - name: copy board specific files
         if: ${{ steps.job_conditions.outputs.firmware-here == 'false' }}
         run: |
-          ls -lh ${{ steps.job_variables.outputs.firmware-name }}
-          ls -lh BlueMicro_BLE/firmware/keyboards/${{ matrix.keyboard }}/config/${{ matrix.keyboard_config }}/keyboard_config.h
+          ls -lh
           cp BlueMicro_BLE/firmware/keyboards/${{ matrix.keyboard }}/config/${{ matrix.keyboard_config }}/keyboard_config.h ${{ steps.job_variables.outputs.firmware-name }}
           cp ${{ steps.job_variables.outputs.hardware-config }} ${{ steps.job_variables.outputs.firmware-name }}
           cp BlueMicro_BLE/firmware/keyboards/${{ matrix.keyboard }}/keymaps/${{ matrix.keymap }}/keymap.h ${{ steps.job_variables.outputs.firmware-name }}

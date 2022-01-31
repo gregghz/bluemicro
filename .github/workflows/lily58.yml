@@ -50,6 +50,12 @@ jobs:
         if: ${{ steps.job_conditions.outputs.firmware-here == 'false' }}
         run: |
           git clone https://github.com/jpconstantineau/BlueMicro_BLE.git
+      - name: update BlueMicro_BLE repository
+        if: $${{ steps.job_conditions.outputs.firmware-here == 'true' }}
+        run: |
+          cd BlueMicro_BLE
+          git pull
+          cd ..
       - name: setup job variables
         id: job_variables
         run: |
@@ -60,19 +66,22 @@ jobs:
         run: |
           mkdir ${{ steps.job_variables.outputs.firmware-name }}
       - name: copy main firmware files
-        if: ${{ steps.job_conditions.outputs.firmware-here == 'false' }}
         run: |
           cp BlueMicro_BLE/firmware/*.cpp ${{ steps.job_variables.outputs.firmware-name }}
           cp BlueMicro_BLE/firmware/*.h ${{ steps.job_variables.outputs.firmware-name }}
           cp BlueMicro_BLE/firmware/firmware.ino ${{ steps.job_variables.outputs.firmware-name }}/${{ steps.job_variables.outputs.firmware-name }}.ino
       - name: copy board specific files
-        if: ${{ steps.job_conditions.outputs.firmware-here == 'false' }}
         run: |
-          ls -lh
           cp BlueMicro_BLE/firmware/keyboards/${{ matrix.keyboard }}/config/${{ matrix.keyboard_config }}/keyboard_config.h ${{ steps.job_variables.outputs.firmware-name }}
           cp ${{ steps.job_variables.outputs.hardware-config }} ${{ steps.job_variables.outputs.firmware-name }}
           cp BlueMicro_BLE/firmware/keyboards/${{ matrix.keyboard }}/keymaps/${{ matrix.keymap }}/keymap.h ${{ steps.job_variables.outputs.firmware-name }}
           cp BlueMicro_BLE/firmware/keyboards/${{ matrix.keyboard }}/keymaps/${{ matrix.keymap }}/keymap.cpp ${{ steps.job_variables.outputs.firmware-name }} 
+      - name: copy local overrides
+        run: |
+          cp ${{ matrix.keyboard }}/hardware/${{ matrix.hardware_config }}/${{ matrix.compile_with }}/hardware_config.h ${{ steps.job_variables.outputs.firmware-name }}
+          cp ${{ matrix.keyboard }}/config/${{ matrix.keyboard_config }}/keyboard_config.h ${{ steps.job_variables.outputs.firmware-name }}
+          cp ${{ matrix.keyboard }}/keymaps/${{ matrix.keymap }}/keymap.h ${{ steps.job_variables.outputs.firmware-name }}
+          cp ${{ matrix.keyboard }}/keymaps/${{ matrix.keymap }}/keymap.cpp ${{ steps.job_variables.outputs.firmware-name }}
       - name: remove BlueMicro_BLE repository
         if: ${{ steps.job_conditions.outputs.firmware-here == 'false' }}
         run: |
